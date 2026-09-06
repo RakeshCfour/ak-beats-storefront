@@ -6,21 +6,6 @@ import { formatMoney } from "@/lib/format";
 
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const image = product.images[0];
-  const badge = product.tags.find(tag => tag.toLowerCase().includes("arrival") || tag.toLowerCase().includes("seller"));
-
-  return (
-    <Link href={`/product/${product.handle}`} className="group block">
-      <motion.article className="animate-rise" style={{ animationDelay: `${index * 70}ms`, transformPerspective: 900 }} whileHover={{ y: -8, rotateX: 1.5, rotateY: -1.5 }} transition={{ type: "spring", stiffness: 240, damping: 20 }}>
-        <div className="product-card relative aspect-[4/5] overflow-hidden rounded-[2px] border border-white/10 bg-white/[0.06] shadow-[0_24px_80px_rgba(0,0,0,.35)]">
-          {image ? <img src={image.url} alt={image.altText ?? product.title} className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]" /> : <div className="size-full bg-[radial-gradient(circle_at_35%_20%,#d7c5a1,#7c8879)]" />}
-          {badge && <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#f4f5f7] backdrop-blur-md">{badge}</span>}
-          <span className="absolute bottom-4 right-4 grid size-10 translate-y-2 place-items-center rounded-full bg-[#f4f5f7] text-[#050505] opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"><ArrowUpRight className="size-4" /></span>
-        </div>
-        <div className="flex items-start justify-between gap-4 pt-4">
-          <div><h3 className="font-display text-2xl font-semibold leading-none tracking-[-0.02em]">{product.title}</h3><p className="mt-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#8d99aa]">{product.productType ?? "Edition"}</p></div>
-          <p className="pt-1 text-sm font-semibold">{formatMoney(product.priceRange.min)}</p>
-        </div>
-      </motion.article>
-    </Link>
-  );
+  const badge = product.tags.find(tag => /arrival|seller|limited|drop/i.test(tag));
+  return <Link href={`/product/${product.handle}`} className="group block"><motion.article className="animate-rise" style={{ animationDelay: `${index * 70}ms`, transformPerspective: 900 }} whileHover={{ y: -8, rotateX: 1.5, rotateY: -1.5 }} transition={{ type: "spring", stiffness: 240, damping: 20 }}><div className="chrome-card product-card-image relative aspect-[4/5] overflow-hidden"><div className="absolute inset-0 micro-grid opacity-20" />{image ? <img src={image.url} alt={image.altText ?? product.title} className="relative z-10 size-full object-cover opacity-90 mix-blend-screen grayscale transition-transform duration-500 ease-out group-hover:scale-[1.05]" /> : <div className="relative z-10 size-full bg-[radial-gradient(circle_at_45%_25%,#d8e7f5,#2f3a46_38%,#08090b_74%)]" />}<div className="absolute inset-0 z-20 bg-gradient-to-t from-black/75 via-transparent to-white/[.08]" /><div className="chrome-sheen z-20" />{badge && <span className="absolute left-4 top-4 z-30 border border-white/20 bg-black/35 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[.18em] text-[#dfeaf5] backdrop-blur-md">{badge}</span>}<span className="absolute bottom-4 right-4 z-30 grid size-10 translate-y-2 place-items-center rounded-full bg-[#edf3f8] text-[#050505] opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"><ArrowUpRight className="size-4" /></span></div><div className="flex items-start justify-between gap-4 pt-4"><div><h3 className="font-display text-2xl font-semibold leading-none tracking-[-.04em] text-[#f2f5f8]">{product.title}</h3><p className="mt-2 font-mono text-[9px] font-bold uppercase tracking-[.16em] text-[#83909f]">{product.productType ?? "Edition"}</p></div><p className="pt-1 font-mono text-sm text-[#d5e3f1]">{formatMoney(product.priceRange.min)}</p></div></motion.article></Link>;
 }

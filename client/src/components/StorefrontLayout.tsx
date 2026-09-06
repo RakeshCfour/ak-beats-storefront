@@ -1,6 +1,6 @@
-import { lazy, Suspense, useState, type ReactNode } from "react";
+import { lazy, Suspense, useState, type ReactNode, type FormEvent } from "react";
 import { Link, useLocation } from "wouter";
-import { ArrowUpRight, Loader2, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import { ArrowUpRight, Loader2, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { formatMoney } from "@/lib/format";
 import CursorTrail from "@/components/CursorTrail";
@@ -8,124 +8,25 @@ import CursorTrail from "@/components/CursorTrail";
 const AmbientScene = lazy(() => import("@/components/AmbientScene"));
 
 function Logo() {
-  return (
-    <Link href="/" className="group inline-flex items-center gap-3" aria-label="AK Beats home">
-      <span className="grid size-10 place-items-center rounded-full bg-[#d8c49a] text-[#1f2a22] transition-transform duration-200 group-hover:rotate-12">
-        <span className="font-display text-xl font-semibold leading-none">AK</span>
-      </span>
-      <span className="leading-none">
-        <span className="block font-display text-2xl font-semibold tracking-[-0.04em] text-[#f5f2ea]">AK BEATS</span>
-        <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[0.28em] text-[#bfc8bc]">Independent uniform</span>
-      </span>
-    </Link>
-  );
+  return <Link href="/" className="group inline-flex items-center gap-3" aria-label="AK VOID home"><span className="grid size-9 place-items-center rounded-full border border-[#d4e7f8]/45 bg-[#d9e9f8] text-[#050505] shadow-[0_0_24px_rgba(184,215,246,.2)] transition-transform duration-200 group-hover:rotate-12"><span className="font-display text-lg font-semibold leading-none">AK</span></span><span className="leading-none"><span className="block font-display text-xl font-semibold tracking-[-.05em] text-[#f4f6f8]">AK VOID</span><span className="mt-1 block font-mono text-[8px] uppercase tracking-[.24em] text-[#8793a0]">High-frequency uniform</span></span></Link>;
 }
 
 function CartDrawer() {
   const { cart, isOpen, loading, closeCart, updateQuantity, removeItem, clearCart, proceedToCheckout } = useCart();
-
   if (!isOpen) return null;
+  return <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Shopping bag"><button className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeCart} aria-label="Close shopping bag" /><aside className="relative flex h-full w-full max-w-md flex-col border-l border-white/15 bg-[#08090b]/95 text-[#f4f6f8] shadow-2xl backdrop-blur-2xl"><div className="flex items-center justify-between border-b border-white/10 px-6 py-5"><div><p className="font-mono text-[9px] uppercase tracking-[.24em] text-[#83909f]">Transmission / 001</p><h2 className="mt-1 font-display text-3xl font-semibold tracking-[-.04em]">Your bag</h2></div><button onClick={closeCart} className="rounded-full border border-white/15 p-2 hover:border-[#b7d0ea] hover:text-[#b7d0ea]" aria-label="Close shopping bag"><X className="size-5" /></button></div><div className="flex-1 overflow-y-auto px-6 py-5">{!cart?.items.length ? <div className="grid min-h-[55vh] place-items-center text-center"><div><div className="mx-auto grid size-16 place-items-center rounded-full border border-white/15 bg-white/[.05]"><ShoppingBag className="size-6 text-[#b7d0ea]" /></div><h3 className="mt-5 font-display text-3xl font-semibold">Signal is quiet.</h3><p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-[#83909f]">Add one considered object and we will take it from there.</p><Link href="/shop" onClick={closeCart} className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-[#d8e8f7] underline underline-offset-4">Browse the drop <ArrowUpRight className="size-4" /></Link></div></div> : <div className="space-y-5">{cart.items.map(item => <div key={item.lineId} className="flex gap-4 border-b border-white/10 pb-5"><div className="size-24 shrink-0 overflow-hidden border border-white/10 bg-[#13171b]">{item.image ? <img src={item.image.url} alt={item.image.altText ?? item.productTitle} className="size-full object-cover grayscale" /> : <div className="size-full product-card-image" />}</div><div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-3"><div><p className="font-display text-xl font-semibold leading-tight">{item.productTitle}</p>{item.variantTitle !== "Default Title" && <p className="mt-1 font-mono text-[9px] uppercase tracking-[.14em] text-[#83909f]">{item.variantTitle}</p>}</div><button onClick={() => removeItem(item.lineId)} className="rounded-full p-1 text-[#7d8996] hover:text-[#ff9aaa]" aria-label={`Remove ${item.productTitle}`}><Trash2 className="size-4" /></button></div><div className="mt-4 flex items-center justify-between"><div className="flex items-center gap-3 rounded-full border border-white/15 px-2 py-1"><button onClick={() => updateQuantity(item.lineId, Math.max(0, item.quantity - 1))} className="grid size-5 place-items-center rounded-full hover:bg-white/10" aria-label="Decrease quantity"><Minus className="size-3" /></button><span className="w-4 text-center font-mono text-xs">{item.quantity}</span><button onClick={() => updateQuantity(item.lineId, item.quantity + 1)} className="grid size-5 place-items-center rounded-full hover:bg-white/10" aria-label="Increase quantity"><Plus className="size-3" /></button></div><span className="font-mono text-sm">{formatMoney(item.lineTotal)}</span></div></div></div>)}</div>}</div>{cart?.items.length ? <div className="border-t border-white/10 px-6 py-5"><div className="flex items-center justify-between text-sm"><span className="text-[#83909f]">Subtotal</span><span className="font-mono">{formatMoney(cart.subtotal)}</span></div><p className="mt-2 text-xs leading-5 text-[#83909f]">Taxes and delivery are calculated securely at Shopify checkout.</p><button onClick={proceedToCheckout} disabled={loading} className="mt-5 flex w-full items-center justify-center gap-2 bg-[#edf3f8] px-5 py-4 text-xs font-bold uppercase tracking-[.18em] text-[#050505] hover:bg-[#b7d0ea] disabled:opacity-50">{loading && <Loader2 className="size-4 animate-spin" />} Checkout securely <ArrowUpRight className="size-4" /></button><button onClick={clearCart} className="mx-auto mt-4 block font-mono text-[9px] uppercase tracking-[.2em] text-[#83909f] underline underline-offset-4 hover:text-[#f4f6f8]">Clear bag</button></div> : null}</aside></div>;
+}
 
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Shopping bag">
-      <button className="absolute inset-0 bg-[#10150f]/60 backdrop-blur-[2px]" onClick={closeCart} aria-label="Close shopping bag" />
-      <aside className="relative flex h-full w-full max-w-md flex-col bg-[#0b0b0d] text-[#f4f5f7] shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[#1f2a22]/15 px-6 py-5">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#657163]">Your selection</p>
-            <h2 className="mt-1 font-display text-3xl font-semibold">Shopping bag</h2>
-          </div>
-          <button onClick={closeCart} className="rounded-full p-2 transition-colors hover:bg-[#1f2a22]/10" aria-label="Close shopping bag">
-            <X className="size-5" />
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-6 py-5">
-          {!cart?.items.length ? (
-            <div className="grid min-h-[55vh] place-items-center text-center">
-              <div>
-                <div className="mx-auto grid size-16 place-items-center rounded-full bg-[#e7e2d6]"><ShoppingBag className="size-6 text-[#657163]" /></div>
-                <h3 className="mt-5 font-display text-3xl font-semibold">Your bag is quiet.</h3>
-                <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-[#657163]">Start with one considered piece. We will take it from there.</p>
-                <Link href="/shop" onClick={closeCart} className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] underline underline-offset-4">Browse the edit <ArrowUpRight className="size-4" /></Link>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-5">
-              {cart.items.map(item => (
-                <div key={item.lineId} className="flex gap-4 border-b border-[#1f2a22]/10 pb-5">
-                  <div className="size-24 shrink-0 overflow-hidden bg-[#e8e3d8]">
-                    {item.image ? <img src={item.image.url} alt={item.image.altText ?? item.productTitle} className="size-full object-cover" /> : <div className="size-full bg-gradient-to-br from-[#c8c0ad] to-[#7e8777]" />}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-display text-xl font-semibold leading-tight">{item.productTitle}</p>
-                        {item.variantTitle !== "Default Title" && <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[#657163]">{item.variantTitle}</p>}
-                      </div>
-                      <button onClick={() => removeItem(item.lineId)} className="rounded-full p-1 text-[#657163] hover:bg-[#1f2a22]/10 hover:text-[#1f2a22]" aria-label={`Remove ${item.productTitle}`}><Trash2 className="size-4" /></button>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3 rounded-full border border-[#1f2a22]/15 px-2 py-1">
-                        <button onClick={() => updateQuantity(item.lineId, Math.max(0, item.quantity - 1))} className="grid size-5 place-items-center rounded-full hover:bg-[#1f2a22]/10" aria-label="Decrease quantity"><Minus className="size-3" /></button>
-                        <span className="w-4 text-center text-sm font-semibold">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.lineId, item.quantity + 1)} className="grid size-5 place-items-center rounded-full hover:bg-[#1f2a22]/10" aria-label="Increase quantity"><Plus className="size-3" /></button>
-                      </div>
-                      <span className="text-sm font-semibold">{formatMoney(item.lineTotal)}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {cart?.items.length ? (
-          <div className="border-t border-[#1f2a22]/15 px-6 py-5">
-            <div className="flex items-center justify-between text-sm"><span className="text-[#657163]">Subtotal</span><span className="font-semibold">{formatMoney(cart.subtotal)}</span></div>
-            <p className="mt-2 text-xs leading-5 text-[#657163]">Taxes and delivery are calculated securely at Shopify checkout.</p>
-            <button onClick={proceedToCheckout} disabled={loading} className="mt-5 flex w-full items-center justify-center gap-2 bg-[#1f2a22] px-5 py-4 text-xs font-bold uppercase tracking-[0.18em] text-[#f5f2ea] transition-colors hover:bg-[#314234] disabled:opacity-50">{loading && <Loader2 className="size-4 animate-spin" />} Checkout securely <ArrowUpRight className="size-4" /></button>
-            <button onClick={clearCart} className="mx-auto mt-4 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#657163] underline underline-offset-4">Clear bag</button>
-          </div>
-        ) : null}
-      </aside>
-    </div>
-  );
+function HeaderSearch() {
+  const [, setLocation] = useLocation();
+  const [value, setValue] = useState("");
+  const submit = (event: FormEvent) => { event.preventDefault(); setLocation(`/shop${value.trim() ? `?search=${encodeURIComponent(value.trim())}` : ""}`); };
+  return <form onSubmit={submit} className="search-shell hidden h-10 items-center gap-2 px-3 lg:flex"><Search className="size-3.5 text-[#7f8a97]" /><label className="sr-only" htmlFor="site-search">Search the edit</label><input id="site-search" value={value} onChange={event => setValue(event.target.value)} placeholder="Search the edit" className="w-28 bg-transparent font-mono text-[10px] uppercase tracking-[.12em] text-[#dfe8f1] outline-none placeholder:text-[#75808d]" /></form>;
 }
 
 export default function StorefrontLayout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const { itemCount, openCart } = useCart();
-  const shopActive = location.startsWith("/shop") || location.startsWith("/product");
-
-  return (
-    <div className="min-h-screen bg-[#050505] text-[#f4f5f7]">
-      <Suspense fallback={null}><AmbientScene /></Suspense>
-      <CursorTrail />
-      <div className="relative z-10 bg-white/[0.04] px-4 py-2 text-center text-[9px] font-bold uppercase tracking-[0.22em] text-[#c7d0df] backdrop-blur-xl">Free shipping on orders over ₹4,000 · Designed in India</div>
-      <header className="glass-nav sticky top-0 z-40 border-b border-white/10 bg-[#050505]/70 text-[#f4f5f7] backdrop-blur-xl">
-        <div className="container flex min-h-[76px] items-center justify-between gap-4">
-          <Logo />
-          <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
-            <Link href="/shop" className={`text-xs font-bold uppercase tracking-[0.18em] transition-colors hover:text-[#d8c49a] ${shopActive ? "text-[#d8c49a]" : "text-[#dfe4db]"}`}>Shop</Link>
-            <a href="/#story" className="text-xs font-bold uppercase tracking-[0.18em] text-[#dfe4db] transition-colors hover:text-[#d8c49a]">Our story</a>
-            <a href="/#visit" className="text-xs font-bold uppercase tracking-[0.18em] text-[#dfe4db] transition-colors hover:text-[#d8c49a]">Visit us</a>
-          </nav>
-          <button onClick={openCart} className="relative inline-flex items-center gap-2 rounded-full border border-[#f5f2ea]/25 px-4 py-2.5 text-xs font-bold uppercase tracking-[0.16em] transition-colors hover:border-[#d8c49a] hover:text-[#d8c49a]" aria-label={`Open shopping bag with ${itemCount} items`}>
-            <ShoppingBag className="size-4" /> <span className="hidden sm:inline">Bag</span><span className="grid size-5 place-items-center rounded-full bg-[#d8c49a] text-[10px] text-[#1f2a22]">{itemCount}</span>
-          </button>
-        </div>
-      </header>
-      <main className="relative z-10">{children}</main>
-      <footer className="relative z-10 border-t border-white/10 bg-[#050505]/80 py-12 text-[#f4f5f7] backdrop-blur-xl">
-        <div className="container grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
-          <div><Logo /><p className="mt-5 max-w-xs text-sm leading-6 text-[#bfc8bc]">Independent clothing for the hours that make you. Small drops, considered pieces, no noise.</p></div>
-          <div><p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#d8c49a]">Explore</p><div className="mt-4 grid gap-3 text-sm text-[#dfe4db]"><Link href="/shop" className="hover:text-[#d8c49a]">All pieces</Link><a href="/#story" className="hover:text-[#d8c49a]">The story</a><a href="/#visit" className="hover:text-[#d8c49a]">The store</a></div></div>
-          <div><p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#d8c49a]">Stay close</p><p className="mt-4 text-sm leading-6 text-[#bfc8bc]">Drop notes, studio hours, and the occasional good song.</p><a href="https://instagram.com" target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] hover:text-[#d8c49a]">Instagram <ArrowUpRight className="size-4" /></a></div>
-        </div>
-        <div className="container mt-12 border-t border-white/10 pt-5 text-[10px] uppercase tracking-[0.16em] text-[#879386]">© 2026 AK Beats · Built for the after hours</div>
-      </footer>
-      <CartDrawer />
-    </div>
-  );
+  const shopActive = location.startsWith("/shop") || location.startsWith("/product"); const [currency, setCurrency] = useState("INR");
+  return <div className="site-shell min-h-screen bg-[#050505] text-[#f4f6f8]"><Suspense fallback={null}><AmbientScene /></Suspense><CursorTrail /><div className="relative z-10 border-b border-white/10 bg-white/[.035] px-4 py-2 text-center font-mono text-[9px] uppercase tracking-[.2em] text-[#a9b5c2] backdrop-blur-xl">Free shipping on orders over ₹4,000 · Designed in Hyderabad · Worldwide signal</div><header className="glass-nav sticky top-0 z-40 border-b border-white/10 bg-[#050505]/72 text-[#f4f6f8] backdrop-blur-xl"><div className="container flex min-h-[74px] items-center justify-between gap-4"><Logo /><nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation"><Link href="/shop" className={`text-xs font-bold uppercase tracking-[.18em] transition-colors hover:text-[#b7d0ea] ${shopActive ? "text-[#b7d0ea]" : "text-[#dbe4ec]"}`}>Shop</Link><a href="/#signal" className="text-xs font-bold uppercase tracking-[.18em] text-[#dbe4ec] transition-colors hover:text-[#b7d0ea]">The signal</a><a href="/#visit" className="text-xs font-bold uppercase tracking-[.18em] text-[#dbe4ec] transition-colors hover:text-[#b7d0ea]">Contact</a></nav><div className="flex items-center gap-3"><select aria-label="Select currency" value={currency} onChange={event => setCurrency(event.target.value)} className="hidden bg-transparent font-mono text-[9px] uppercase tracking-[.16em] text-[#b7d0ea] outline-none xl:block"><option value="INR">INR ₹</option><option value="USD">USD $</option><option value="EUR">EUR €</option></select><HeaderSearch /><button onClick={openCart} className="relative inline-flex items-center gap-2 rounded-full border border-white/25 px-4 py-2.5 text-xs font-bold uppercase tracking-[.16em] transition-colors hover:border-[#b7d0ea] hover:text-[#b7d0ea]" aria-label={`Open shopping bag with ${itemCount} items`}><ShoppingBag className="size-4" /><span className="hidden sm:inline">Bag</span><span className="grid size-5 place-items-center rounded-full bg-[#d9e9f8] text-[10px] text-[#050505]">{itemCount}</span></button></div></div></header><main key={location} className="relative z-10 animate-rise">{children}</main><footer id="visit" className="relative z-10 border-t border-white/10 bg-[#050505]/82 py-12 text-[#f4f6f8] backdrop-blur-xl"><div className="container grid gap-12 md:grid-cols-[1.25fr_.8fr_1fr]"><div><Logo /><p className="mt-5 max-w-xs text-sm leading-6 text-[#8995a3]">High-frequency streetwear for low-light hours. Small drops, considered objects, no noise.</p></div><div><p className="font-mono text-[9px] uppercase tracking-[.24em] text-[#b7d0ea]">Explore</p><div className="mt-4 grid gap-3 text-sm text-[#ccd5de]"><Link href="/shop" className="hover:text-[#b7d0ea]">All pieces</Link><a href="/#signal" className="hover:text-[#b7d0ea]">The signal</a><a href="tel:+918099996966" className="hover:text-[#b7d0ea]">+91 80999 96966</a></div></div><div><p className="font-mono text-[9px] uppercase tracking-[.24em] text-[#b7d0ea]">Source / AK</p><p className="mt-4 max-w-xs text-sm leading-6 text-[#8995a3]">9/79/1, Road No. 5, SV Nagar, Sri Chakri Puram Colony, Kapra, Hyderabad, Telangana 500083, India.</p><a href="https://instagram.com/ak_beats_27" target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-[#dce9f6] hover:text-[#b7d0ea]">Instagram @ak_beats_27 <ArrowUpRight className="size-4" /></a></div></div><div className="container mt-12 border-t border-white/10 pt-5 font-mono text-[9px] uppercase tracking-[.16em] text-[#66717e]">© 2026 AK VOID · Built for the after hours</div></footer><CartDrawer /></div>;
 }
