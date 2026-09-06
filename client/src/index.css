@@ -139,6 +139,8 @@
 .liquid-shadow { position: absolute; left: 8%; right: 8%; bottom: -2rem; height: 2.5rem; border-radius: 50%; background: rgba(218,210,199,.16); filter: blur(16px); animation: shadow-breathe 8s cubic-bezier(.45,.05,.55,.95) infinite; }
 .hero-object-label { position: absolute; right: -1.5rem; bottom: 8rem; width: 190px; padding-left: 1rem; border-left: 1px solid rgba(214,205,192,.55); }
 .hero-stage-note { position: absolute; left: 0; bottom: 1.5rem; font-size: .73rem; line-height: 1.45; color: #7c7973; }
+.marble-hero-accent { position: absolute; z-index: 0; top: 2rem; right: 3%; width: 34%; max-width: 205px; aspect-ratio: 3 / 4; object-fit: cover; object-position: center; opacity: .2; filter: grayscale(1) contrast(1.25) brightness(.85); mix-blend-mode: screen; transform: rotate(5deg); animation: suspend 11s cubic-bezier(.45,.05,.55,.95) infinite reverse; }
+.marble-story-cutout { position: absolute; top: 0; left: 0; width: 132px; height: 165px; object-fit: cover; object-position: center top; opacity: .55; filter: grayscale(1) contrast(1.3) brightness(.72); mix-blend-mode: screen; mask-image: linear-gradient(to bottom, #000 0 72%, transparent 100%); transform: rotate(-4deg); }
 
 /* Keep the custom scrollbars quiet and on-brand. */
 * { scrollbar-width: thin; scrollbar-color: rgba(201,220,241,.35) transparent; }
@@ -152,6 +154,8 @@
 @media (max-width: 639px) {
   .site-shell::before { opacity: .24; }
   .glass-panel::before, .chrome-card::before { inset: 6px; }
+  .marble-hero-accent { right: -1%; width: 31%; opacity: .16; }
+  .marble-story-cutout { width: 112px; height: 142px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

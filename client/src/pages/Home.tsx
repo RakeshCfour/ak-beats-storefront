@@ -5,6 +5,8 @@ import { trpc } from "@/lib/trpc";
 import ProductCard from "@/components/ProductCard";
 
 const fallbackHero = "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1800&q=88";
+const goddessStatue = "/manus-storage/greek-goddess_0f4330b7.jpg";
+const zeusStatue = "/manus-storage/greek-zeus_4be8fbe8.jpg";
 
 export default function Home() {
   const input = useMemo(() => ({ first: 12 }), []);
@@ -26,6 +28,7 @@ export default function Home() {
           </div>
 
           <div className="hero-stage relative min-h-[490px] lg:min-h-[600px]">
+            <img src={goddessStatue} alt="Classical marble goddess sculpture" className="marble-hero-accent" />
             <div className="suspension-wire" aria-hidden="true" />
             <div className="suspended-product">
               <div className="product-image-shell"><img src={heroImage} alt={`${heroName} by AK VOID`} className="size-full object-cover object-center grayscale" /></div>
@@ -37,7 +40,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="the-uniform" className="container py-20 lg:py-28"><div className="grid gap-12 lg:grid-cols-[.38fr_1fr] lg:items-start"><div><p className="font-mono text-[10px] uppercase tracking-[.24em] text-[#7e7a74]">01 / The uniform</p><p className="mt-5 max-w-[190px] text-xs leading-6 text-[#77736e]">Less noise. Better materials. A fit that stays in rotation.</p></div><div><h2 className="max-w-4xl font-display text-5xl font-semibold leading-[.9] tracking-[-.06em] text-[#f2f0ec] sm:text-7xl">Clothes for the space between <em className="font-normal text-[#b9b0a4]">where you are</em> and where you are going.</h2><p className="mt-9 max-w-xl text-base leading-8 text-[#94918c]">AK VOID is founded by AK in Hyderabad. Every piece is cut in small runs, finished with restraint, and made to earn its place in your wardrobe.</p><Link href="/shop" className="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-[#ded9d1] underline underline-offset-8 hover:text-[#b9b0a4]">See the first drop <ArrowUpRight className="size-4" /></Link></div></div></section>
+      <section id="the-uniform" className="container py-20 lg:py-28"><div className="grid gap-12 lg:grid-cols-[.38fr_1fr] lg:items-start"><div className="relative min-h-[180px]"><img src={zeusStatue} alt="Classical marble Zeus sculpture" className="marble-story-cutout" /><div className="relative z-10 pt-28"><p className="font-mono text-[10px] uppercase tracking-[.24em] text-[#7e7a74]">01 / The uniform</p><p className="mt-5 max-w-[190px] text-xs leading-6 text-[#77736e]">Less noise. Better materials. A fit that stays in rotation.</p></div></div><div><h2 className="max-w-4xl font-display text-5xl font-semibold leading-[.9] tracking-[-.06em] text-[#f2f0ec] sm:text-7xl">Clothes for the space between <em className="font-normal text-[#b9b0a4]">where you are</em> and where you are going.</h2><p className="mt-9 max-w-xl text-base leading-8 text-[#94918c]">AK VOID is founded by AK in Hyderabad. Every piece is cut in small runs, finished with restraint, and made to earn its place in your wardrobe.</p><Link href="/shop" className="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-[#ded9d1] underline underline-offset-8 hover:text-[#b9b0a4]">See the first drop <ArrowUpRight className="size-4" /></Link></div></div></section>
 
       <section className="border-y border-white/10 bg-white/[.018] py-20 lg:py-24"><div className="container"><div className="flex flex-wrap items-end justify-between gap-6"><div><p className="font-mono text-[10px] uppercase tracking-[.24em] text-[#7e7a74]">02 / The first drop</p><h2 className="mt-3 font-display text-5xl font-semibold tracking-[-.06em] text-[#f2f0ec] sm:text-6xl">The essentials, re-cut.</h2></div><Link href="/shop" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-[#cbc5bc] hover:text-[#f1eee9]">View all pieces <ArrowUpRight className="size-4" /></Link></div>{isLoading ? <div className="grid min-h-72 place-items-center"><Loader2 className="size-6 animate-spin text-[#b9b0a4]" /></div> : featured.length ? <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">{featured.map((product, index) => <ProductCard key={product.id} product={product} index={index} />)}</div> : <div className="mt-10 chrome-card p-12 text-center text-sm text-[#8c8882]">The first drop is syncing. Check back shortly.</div>}</div></section>
 
