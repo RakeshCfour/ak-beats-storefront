@@ -28,10 +28,10 @@ export default function Home() {
           </div>
 
           <div className="hero-stage relative min-h-[490px] lg:min-h-[600px]">
-            <img src={goddessStatue} alt="Classical marble goddess sculpture" className="marble-hero-accent" />
+            <img src={goddessStatue} alt="Classical marble goddess sculpture" className="marble-hero-accent" style={{opacity: '0.8'}} />
             <div className="suspension-wire" aria-hidden="true" />
             <div className="suspended-product">
-              <div className="product-image-shell"><img src={heroImage} alt={`${heroName} by AK VOID`} className="size-full object-cover object-center grayscale" /></div>
+              <div className="product-image-shell" style={{opacity: '0.8'}}><img src={heroImage} alt={`${heroName} by AK VOID`} className="size-full object-cover object-center grayscale" style={{opacity: '0.8'}} /></div>
               <div className="liquid-shadow" aria-hidden="true" />
             </div>
             <div className="hero-object-label"><span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#b8b0a7]">AK VOID / 001</span><span className="mt-2 block max-w-[170px] text-xs leading-5 text-[#a09d98]">{heroName}<br />made to be worn often</span></div>
