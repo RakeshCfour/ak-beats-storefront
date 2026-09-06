@@ -7,6 +7,8 @@ import ProductCard from "@/components/ProductCard";
 const fallbackHero = "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1800&q=88";
 const goddessStatue = "/manus-storage/greek-goddess_0f4330b7.jpg";
 const zeusStatue = "/manus-storage/greek-zeus_4be8fbe8.jpg";
+const antinousProfile = "/manus-storage/antinous-profile_4f4ed7a2.jpg";
+const antinousBust = "/manus-storage/antinous-bust_a6e06717.jpg";
 
 export default function Home() {
   const input = useMemo(() => ({ first: 12 }), []);
@@ -29,6 +31,8 @@ export default function Home() {
 
           <div className="hero-stage relative min-h-[490px] lg:min-h-[600px]">
             <img src={goddessStatue} alt="Classical marble goddess sculpture" className="marble-hero-accent" style={{opacity: '0.8'}} />
+            <img src={antinousProfile} alt="Classical marble profile sculpture" className="marble-micro-one" />
+            <img src={antinousBust} alt="Classical marble bust sculpture" className="marble-micro-two" />
             <div className="suspension-wire" aria-hidden="true" />
             <div className="suspended-product">
               <div className="product-image-shell" style={{opacity: '0.8'}}><img src={heroImage} alt={`${heroName} by AK VOID`} className="size-full object-cover object-center grayscale" style={{opacity: '0.8'}} /></div>
