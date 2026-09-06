@@ -57,7 +57,7 @@
 @layer base {
   * { @apply border-border outline-ring/50; }
   html { scroll-behavior: smooth; }
-  body { @apply bg-background text-foreground; font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+  body { @apply bg-background text-foreground; font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
   button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [type="button"]:not(:disabled), [type="submit"]:not(:disabled), a[href], select:not(:disabled) { @apply cursor-pointer; }
   ::selection { background: #d8c49a; color: #1f2a22; }
 }
@@ -65,10 +65,21 @@
 @layer components {
   .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
   .flex { min-height: 0; min-width: 0; }
-  .font-display { font-family: "Cormorant Garamond", Georgia, serif; }
+  .font-display { font-family: "Syne", "Space Grotesk", ui-sans-serif, sans-serif; }
   @media (min-width: 640px) { .container { padding-left: 1.5rem; padding-right: 1.5rem; } }
   @media (min-width: 1024px) { .container { padding-left: 2rem; padding-right: 2rem; max-width: 1280px; } }
 }
+
+.ambient-glow { position: absolute; border-radius: 999px; filter: blur(90px); opacity: .2; mix-blend-mode: screen; pointer-events: none; }
+.ambient-glow-one { width: 34vw; height: 34vw; right: -10vw; top: 8vh; background: radial-gradient(circle, #4c4aff, transparent 68%); }
+.ambient-glow-two { width: 28vw; height: 28vw; left: -8vw; top: 54vh; background: radial-gradient(circle, #ff3ac8, transparent 68%); opacity: .12; }
+.glass-nav { box-shadow: 0 12px 50px rgba(0,0,0,.24); }
+.glass-panel { border: 1px solid rgba(255,255,255,.13); background: linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.025)); box-shadow: inset 0 1px rgba(255,255,255,.08), 0 25px 80px rgba(0,0,0,.24); backdrop-filter: blur(18px); }
+.cursor-trail { position: fixed; inset: 0; z-index: 70; pointer-events: none; }
+.cursor-dot, .cursor-ring { position: fixed; display: block; border-radius: 999px; pointer-events: none; }
+.cursor-dot { width: 6px; height: 6px; background: #f4f5f7; box-shadow: 0 0 14px rgba(199,208,223,.9); }
+.cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(199,208,223,.55); mix-blend-mode: difference; }
+@media (pointer: coarse) { .cursor-trail { display: none; } }
 
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .animate-rise { animation: rise 500ms cubic-bezier(.23,1,.32,1) both; }

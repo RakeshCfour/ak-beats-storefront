@@ -1,8 +1,11 @@
-import { useState, type ReactNode } from "react";
+import { lazy, Suspense, useState, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowUpRight, Loader2, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { formatMoney } from "@/lib/format";
+import CursorTrail from "@/components/CursorTrail";
+
+const AmbientScene = lazy(() => import("@/components/AmbientScene"));
 
 function Logo() {
   return (
@@ -26,7 +29,7 @@ function CartDrawer() {
   return (
     <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Shopping bag">
       <button className="absolute inset-0 bg-[#10150f]/60 backdrop-blur-[2px]" onClick={closeCart} aria-label="Close shopping bag" />
-      <aside className="relative flex h-full w-full max-w-md flex-col bg-[#f5f2ea] text-[#1f2a22] shadow-2xl">
+      <aside className="relative flex h-full w-full max-w-md flex-col bg-[#0b0b0d] text-[#f4f5f7] shadow-2xl">
         <div className="flex items-center justify-between border-b border-[#1f2a22]/15 px-6 py-5">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#657163]">Your selection</p>
@@ -96,9 +99,11 @@ export default function StorefrontLayout({ children }: { children: ReactNode }) 
   const shopActive = location.startsWith("/shop") || location.startsWith("/product");
 
   return (
-    <div className="min-h-screen bg-[#f5f2ea] text-[#1f2a22]">
-      <div className="bg-[#1f2a22] px-4 py-2 text-center text-[9px] font-bold uppercase tracking-[0.22em] text-[#d8c49a]">Free shipping on orders over ₹4,000 · Designed in India</div>
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#1f2a22] text-[#f5f2ea]">
+    <div className="min-h-screen bg-[#050505] text-[#f4f5f7]">
+      <Suspense fallback={null}><AmbientScene /></Suspense>
+      <CursorTrail />
+      <div className="relative z-10 bg-white/[0.04] px-4 py-2 text-center text-[9px] font-bold uppercase tracking-[0.22em] text-[#c7d0df] backdrop-blur-xl">Free shipping on orders over ₹4,000 · Designed in India</div>
+      <header className="glass-nav sticky top-0 z-40 border-b border-white/10 bg-[#050505]/70 text-[#f4f5f7] backdrop-blur-xl">
         <div className="container flex min-h-[76px] items-center justify-between gap-4">
           <Logo />
           <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
@@ -111,8 +116,8 @@ export default function StorefrontLayout({ children }: { children: ReactNode }) 
           </button>
         </div>
       </header>
-      <main>{children}</main>
-      <footer className="bg-[#1f2a22] py-12 text-[#f5f2ea]">
+      <main className="relative z-10">{children}</main>
+      <footer className="relative z-10 border-t border-white/10 bg-[#050505]/80 py-12 text-[#f4f5f7] backdrop-blur-xl">
         <div className="container grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div><Logo /><p className="mt-5 max-w-xs text-sm leading-6 text-[#bfc8bc]">Independent clothing for the hours that make you. Small drops, considered pieces, no noise.</p></div>
           <div><p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#d8c49a]">Explore</p><div className="mt-4 grid gap-3 text-sm text-[#dfe4db]"><Link href="/shop" className="hover:text-[#d8c49a]">All pieces</Link><a href="/#story" className="hover:text-[#d8c49a]">The story</a><a href="/#visit" className="hover:text-[#d8c49a]">The store</a></div></div>
