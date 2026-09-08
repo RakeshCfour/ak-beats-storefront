@@ -7,7 +7,6 @@ import type { Product } from "@shared/commerce/types";
 
 const fallbackHero = "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1800&q=88";
 const goddessStatue = "/manus-storage/greek-goddess_0f4330b7.jpg";
-const zeusStatue = "/manus-storage/greek-zeus_4be8fbe8.jpg";
 const antinousProfile = "/manus-storage/antinous-profile_4f4ed7a2.jpg";
 const antinousBust = "/manus-storage/antinous-bust_a6e06717.jpg";
 
@@ -16,7 +15,7 @@ function HeroSection({ heroImage, heroName }: { heroImage: string; heroName: str
 }
 
 function UniformSection() {
-  return <section id="the-uniform" className="container py-20 lg:py-28"><div className="grid gap-12 lg:grid-cols-[.38fr_1fr] lg:items-start"><div className="relative min-h-[180px]"><img src={zeusStatue} alt="Classical marble Zeus sculpture" className="marble-story-cutout" /><div className="relative z-10 pt-28"><p className="font-mono text-[10px] uppercase tracking-[.24em] text-[#7e7a74]">01 / The uniform</p><p className="mt-5 max-w-[190px] text-xs leading-6 text-[#77736e]">Less noise. Better materials. A fit that stays in rotation.</p></div></div><div><h2 className="max-w-4xl font-display text-5xl font-semibold leading-[.9] tracking-[-.06em] text-[#f2f0ec] sm:text-7xl">Clothes for the space between <em className="font-normal text-[#b9b0a4]">where you are</em> and where you are going.</h2><p className="mt-9 max-w-xl text-base leading-8 text-[#94918c]">AK VOID is founded by AK in Hyderabad. Every piece is cut in small runs, finished with restraint, and made to earn its place in your wardrobe.</p><Link href="/shop" className="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-[#ded9d1] underline underline-offset-8 hover:text-[#b9b0a4]">See the first drop <ArrowUpRight className="size-4" /></Link></div></div></section>;
+  return <section id="the-uniform" className="container py-20 lg:py-28"><div className="grid gap-12 lg:grid-cols-[.38fr_1fr] lg:items-start"><div className="relative min-h-[180px]"><div className="relative z-10 pt-4"><p className="font-mono text-[10px] uppercase tracking-[.24em] text-[#7e7a74]">01 / The uniform</p><p className="mt-5 max-w-[190px] text-xs leading-6 text-[#77736e]">Less noise. Better materials. A fit that stays in rotation.</p></div></div><div><h2 className="max-w-4xl font-display text-5xl font-semibold leading-[.9] tracking-[-.06em] text-[#f2f0ec] sm:text-7xl">Clothes for the space between <em className="font-normal text-[#b9b0a4]">where you are</em> and where you are going.</h2><p className="mt-9 max-w-xl text-base leading-8 text-[#94918c]">AK VOID is founded by AK in Hyderabad. Every piece is cut in small runs, finished with restraint, and made to earn its place in your wardrobe.</p><Link href="/shop" className="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-[#ded9d1] underline underline-offset-8 hover:text-[#b9b0a4]">See the first drop <ArrowUpRight className="size-4" /></Link></div></div></section>;
 }
 
 function DropSection({ products, isLoading }: { products?: Product[]; isLoading: boolean }) {
@@ -24,14 +23,10 @@ function DropSection({ products, isLoading }: { products?: Product[]; isLoading:
   return <section className="border-y border-white/10 bg-white/[.018] py-20 lg:py-24"><div className="container"><div className="flex flex-wrap items-end justify-between gap-6"><div><p className="font-mono text-[10px] uppercase tracking-[.24em] text-[#7e7a74]">02 / The first drop</p><h2 className="mt-3 font-display text-5xl font-semibold tracking-[-.06em] text-[#f2f0ec] sm:text-6xl">The essentials, re-cut.</h2></div><Link href="/shop" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-[#cbc5bc] hover:text-[#f1eee9]">View all pieces <ArrowUpRight className="size-4" /></Link></div>{isLoading ? <div className="grid min-h-72 place-items-center"><Loader2 className="size-6 animate-spin text-[#b9b0a4]" /></div> : featured.length ? <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">{featured.map((product, index) => <ProductCard key={product.id} product={product} index={index} />)}</div> : <div className="mt-10 chrome-card p-12 text-center text-sm text-[#8c8882]">The first drop is syncing. Check back shortly.</div>}</div></section>;
 }
 
-function EditorialSection() {
-  return <section className="container py-20 lg:py-28"><div className="mb-8 flex items-end justify-between gap-6"><p className="font-mono text-[10px] uppercase tracking-[.24em] text-[#7e7a74]">03 / Form study</p><span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#77736e]">Material / posture / light</span></div><div className="grid gap-6 md:grid-cols-[.82fr_1.18fr]"><div className="glass-panel overflow-hidden"><img src={antinousBust} alt="Classical marble bust in monochrome" className="h-full min-h-[300px] w-full object-cover grayscale opacity-80 transition-transform duration-700 hover:scale-[1.03]" /></div><div className="glass-panel overflow-hidden"><img src={goddessStatue} alt="Classical marble goddess portrait in monochrome" className="h-full min-h-[300px] w-full object-cover grayscale opacity-80 transition-transform duration-700 hover:scale-[1.03]" /></div></div></section>;
-}
-
 export default function Home() {
   const input = useMemo(() => ({ first: 12 }), []);
   const { data: products, isLoading } = trpc.commerce.products.list.useQuery(input);
   const heroImage = products?.[0]?.images[0]?.url ?? fallbackHero;
   const heroName = products?.[0]?.title ?? "The first drop";
-  return <div className="site-shell"><HeroSection heroImage={heroImage} heroName={heroName} /><UniformSection /><DropSection products={products} isLoading={isLoading} /><EditorialSection /></div>;
+  return <div className="site-shell"><HeroSection heroImage={heroImage} heroName={heroName} /><UniformSection /><DropSection products={products} isLoading={isLoading} /></div>;
 }
