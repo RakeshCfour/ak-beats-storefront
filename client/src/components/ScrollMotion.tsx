@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function ScrollMotion() {
   useEffect(() => {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     const lenis = new Lenis({ autoRaf: false, lerp: 0.085, smoothWheel: true, syncTouch: false });
     let current = 0;
     let target = 0;
