@@ -9,34 +9,14 @@ import { CartProvider } from "./contexts/CartContext";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
+import Admin from "./pages/Admin";
 
-function Router() {
-  return (
-    <StorefrontLayout>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/shop" component={Shop} />
-        <Route path="/product/:handle" component={ProductDetail} />
-        <Route path="/404" component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </StorefrontLayout>
-  );
+function StorefrontRouter() {
+  return <StorefrontLayout><Switch><Route path="/" component={Home} /><Route path="/shop" component={Shop} /><Route path="/product/:handle" component={ProductDetail} /><Route path="/404" component={NotFound} /><Route component={NotFound} /></Switch></StorefrontLayout>;
 }
 
 function App() {
-  return (
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark">
-        <TooltipProvider>
-          <CartProvider>
-            <Toaster />
-            <Router />
-          </CartProvider>
-        </TooltipProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
+  return <ErrorBoundary><ThemeProvider defaultTheme="dark"><TooltipProvider><CartProvider><Toaster /><Switch><Route path="/admin" component={Admin} /><Route component={StorefrontRouter} /></Switch></CartProvider></TooltipProvider></ThemeProvider></ErrorBoundary>;
 }
 
 export default App;

@@ -8,6 +8,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { handleRazorpayWebhook } from "../payments";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -31,6 +32,8 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  app.use((req, res, next) => { const allowedOrigin = process.env.FRONTEND_ORIGIN || "http://localhost:3000"; const requestOrigin = req.headers.origin; if (!requestOrigin || requestOrigin === allowedOrigin) res.header("Access-Control-Allow-Origin", requestOrigin ?? allowedOrigin); res.header("Access-Control-Allow-Credentials", "true"); res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, x-razorpay-signature"); res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS"); if (req.method === "OPTIONS") return res.sendStatus(204); next(); });
+  app.post("/api/payments/razorpay/webhook", express.raw({ type: "application/json", limit: "2mb" }), async (req, res) => { try { await handleRazorpayWebhook(req.body as Buffer, req.header("x-razorpay-signature")); res.json({ received: true }); } catch (error) { console.error("[Razorpay webhook]", error); res.status(400).json({ error: "Invalid webhook" }); } });
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
