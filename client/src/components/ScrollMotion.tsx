@@ -7,7 +7,18 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function ScrollMotion() {
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      const onScroll = () => {
+        const progress = window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        document.documentElement.style.setProperty("--scroll-progress", progress.toFixed(4));
+        document.documentElement.style.setProperty("--scroll-shift-x", `${((progress - 0.18) * 42).toFixed(2)}px`);
+        document.documentElement.style.setProperty("--scroll-shift-y", `${(progress * 96).toFixed(2)}px`);
+        document.documentElement.style.setProperty("--scroll-tilt", `${((progress - 0.18) * 7).toFixed(2)}deg`);
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+      return () => window.removeEventListener("scroll", onScroll);
+    }
     const lenis = new Lenis({ autoRaf: false, lerp: 0.085, smoothWheel: true, syncTouch: false });
     let current = 0;
     let target = 0;

@@ -3,9 +3,62 @@ import { Float } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-function QuietForm() {
+type PointerState = { x: number; y: number };
+
+type ScrollObjectProps = {
+  scroll: React.MutableRefObject<number>;
+  pointer: React.MutableRefObject<PointerState>;
+  variant: "hero" | "left" | "right";
+};
+
+const paths = {
+  hero: { start: [2.2, 0.9, -1.5] as const, phase: 0, size: 1.58, color: "#f0ece6" },
+  left: { start: [-2.7, -0.4, -2.8] as const, phase: 1.8, size: 0.92, color: "#d8e7f5" },
+  right: { start: [3.1, -1.25, -2.2] as const, phase: 3.2, size: 1.08, color: "#c7d0db" },
+};
+
+function ScrollObject({ scroll, pointer, variant }: ScrollObjectProps) {
   const group = useRef<THREE.Group>(null);
-  const pointer = useRef({ x: 0, y: 0 });
+  const config = paths[variant];
+
+  useFrame((_, delta) => {
+    if (!group.current) return;
+    const progress = scroll.current;
+    const phase = config.phase;
+    const direction = variant === "left" ? -1 : 1;
+    const x = Math.sin(progress * Math.PI * 2.2 + phase) * (variant === "hero" ? 3.3 : 2.65) + pointer.current.x * 0.16;
+    const y = Math.cos(progress * Math.PI * 1.55 + phase) * (variant === "hero" ? 1.35 : 1.05) + (variant === "left" ? 0.35 : -0.15) + pointer.current.y * 0.1;
+    const z = config.start[2] + Math.sin(progress * Math.PI + phase) * 2.35;
+    const scale = config.size + Math.sin(progress * Math.PI + phase) * (variant === "hero" ? 0.78 : 0.32);
+    group.current.position.x = THREE.MathUtils.damp(group.current.position.x, x, 1.4, delta);
+    group.current.position.y = THREE.MathUtils.damp(group.current.position.y, y, 1.4, delta);
+    group.current.position.z = THREE.MathUtils.damp(group.current.position.z, z, 1.4, delta);
+    group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, pointer.current.y * 0.2 + progress * (1.6 + phase * 0.12), 1.5, delta);
+    group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, pointer.current.x * 0.25 + progress * (2.4 + phase * 0.14), 1.5, delta);
+    group.current.rotation.z += delta * direction * (0.045 + progress * 0.075);
+    group.current.scale.setScalar(THREE.MathUtils.damp(group.current.scale.x, Math.max(0.55, scale), 1.4, delta));
+  });
+
+  return <group ref={group} position={config.start} scale={config.size}>
+    <Float speed={0.36 + config.phase * 0.04} rotationIntensity={0.12} floatIntensity={0.2} floatingRange={[-0.16, 0.16]}>
+      <mesh position={[0, 0, 0.1]}>
+        <icosahedronGeometry args={[0.82, 3]} />
+        <meshStandardMaterial color={config.color} metalness={0.98} roughness={0.1} transparent opacity={variant === "hero" ? 0.34 : 0.28} depthWrite={false} />
+      </mesh>
+      <mesh rotation={[0.45, 0.18, 0.2]}>
+        <torusGeometry args={[1.5, 0.026, 20, 96]} />
+        <meshStandardMaterial color={config.color} metalness={0.94} roughness={0.14} transparent opacity={variant === "hero" ? 0.35 : 0.3} depthWrite={false} />
+      </mesh>
+      <mesh rotation={[1.1, 0.2, 0.4]}>
+        <torusGeometry args={[0.96, 0.014, 12, 80]} />
+        <meshStandardMaterial color="#ffffff" metalness={0.98} roughness={0.08} transparent opacity={0.38} depthWrite={false} />
+      </mesh>
+    </Float>
+  </group>;
+}
+
+function Scene() {
+  const pointer = useRef<PointerState>({ x: 0, y: 0 });
   const scroll = useRef(0);
 
   useEffect(() => {
@@ -26,28 +79,14 @@ function QuietForm() {
     };
   }, []);
 
-  useFrame((_, delta) => {
-    if (!group.current) return;
-    const progress = scroll.current;
-    const journeyX = Math.sin(progress * Math.PI * 2.2) * 3.1;
-    const journeyY = Math.cos(progress * Math.PI * 1.7) * 1.25 + 0.35;
-    const journeyZ = -1.5 + Math.sin(progress * Math.PI) * 2.9;
-    const journeyScale = 1.42 + Math.sin(progress * Math.PI) * 0.72;
-    group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, pointer.current.y * 0.16 + progress * 1.9, 1.6, delta);
-    group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, pointer.current.x * 0.2 + progress * 3.4, 1.6, delta);
-    group.current.rotation.z += delta * (0.035 + progress * 0.08);
-    group.current.position.x = THREE.MathUtils.damp(group.current.position.x, pointer.current.x * 0.12 + journeyX, 1.5, delta);
-    group.current.position.y = THREE.MathUtils.damp(group.current.position.y, journeyY, 1.5, delta);
-    group.current.position.z = THREE.MathUtils.damp(group.current.position.z, journeyZ, 1.5, delta);
-    const currentScale = group.current.scale.x;
-    const nextScale = THREE.MathUtils.damp(currentScale, journeyScale, 1.5, delta);
-    group.current.scale.setScalar(nextScale);
-  });
-
-  return <group ref={group} position={[2.2, 0.9, -1.5]} scale={1.42}><Float speed={0.45} rotationIntensity={0.14} floatIntensity={0.24} floatingRange={[-0.12, 0.12]}><mesh position={[0, 0, 0.12]}><icosahedronGeometry args={[0.9, 3]} /><meshStandardMaterial color="#c7d0db" metalness={0.96} roughness={0.12} transparent opacity={0.16} depthWrite={false} /></mesh><mesh rotation={[0.45, 0.18, 0.2]}><torusGeometry args={[1.65, 0.025, 20, 96]} /><meshStandardMaterial color="#f0ece6" metalness={0.92} roughness={0.18} transparent opacity={0.14} depthWrite={false} /></mesh><mesh rotation={[1.1, 0.2, 0.4]}><torusGeometry args={[1.05, 0.012, 12, 80]} /><meshStandardMaterial color="#d8e7f5" metalness={0.96} roughness={0.12} transparent opacity={0.18} depthWrite={false} /></mesh></Float></group>;
+  return <>
+    <ScrollObject scroll={scroll} pointer={pointer} variant="hero" />
+    <ScrollObject scroll={scroll} pointer={pointer} variant="left" />
+    <ScrollObject scroll={scroll} pointer={pointer} variant="right" />
+  </>;
 }
 
 export default function AmbientScene() {
   const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
-  return <div className="ambient-canvas-layer pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true"><div className="ambient-glow ambient-glow-one" />{!isTouch && <Canvas camera={{ position: [0, 0, 8], fov: 48 }} dpr={[1, 1.25]} gl={{ alpha: true, antialias: true }} frameloop="always"><ambientLight intensity={0.24} /><pointLight position={[4, 4, 6]} intensity={10} color="#f0ece6" distance={10} /><QuietForm /></Canvas>}</div>;
+  return <div className="ambient-canvas-layer pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true"><div className="ambient-glow ambient-glow-one" /><div className="orbital-fallback"><span className="fallback-orb fallback-orb-main"><i /><b /></span><span className="fallback-orb fallback-orb-left"><i /><b /></span><span className="fallback-orb fallback-orb-right"><i /><b /></span></div>{!isTouch && <Canvas camera={{ position: [0, 0, 8], fov: 48 }} dpr={[1, 1.25]} gl={{ alpha: true, antialias: true }} frameloop="always"><ambientLight intensity={0.3} /><pointLight position={[4, 4, 6]} intensity={12} color="#f0ece6" distance={12} /><Scene /></Canvas>}</div>;
 }
