@@ -29,10 +29,10 @@ function QuietForm() {
   useFrame((_, delta) => {
     if (!group.current) return;
     const progress = scroll.current;
-    const journeyX = Math.sin(progress * Math.PI * 2.2) * 1.9;
-    const journeyY = Math.cos(progress * Math.PI * 1.7) * 0.8 + 0.35;
-    const journeyZ = -1.5 + Math.sin(progress * Math.PI) * 2.25;
-    const journeyScale = 0.72 + Math.sin(progress * Math.PI) * 0.34;
+    const journeyX = Math.sin(progress * Math.PI * 2.2) * 3.1;
+    const journeyY = Math.cos(progress * Math.PI * 1.7) * 1.25 + 0.35;
+    const journeyZ = -1.5 + Math.sin(progress * Math.PI) * 2.9;
+    const journeyScale = 1.42 + Math.sin(progress * Math.PI) * 0.72;
     group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, pointer.current.y * 0.16 + progress * 1.9, 1.6, delta);
     group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, pointer.current.x * 0.2 + progress * 3.4, 1.6, delta);
     group.current.rotation.z += delta * (0.035 + progress * 0.08);
@@ -44,7 +44,7 @@ function QuietForm() {
     group.current.scale.setScalar(nextScale);
   });
 
-  return <group ref={group} position={[2.2, 0.9, -1.5]} scale={0.72}><Float speed={0.45} rotationIntensity={0.14} floatIntensity={0.24} floatingRange={[-0.12, 0.12]}><mesh position={[0, 0, 0.12]}><icosahedronGeometry args={[0.9, 3]} /><meshStandardMaterial color="#c7d0db" metalness={0.96} roughness={0.12} transparent opacity={0.28} /></mesh><mesh rotation={[0.45, 0.18, 0.2]}><torusGeometry args={[1.65, 0.025, 20, 96]} /><meshStandardMaterial color="#f0ece6" metalness={0.92} roughness={0.18} transparent opacity={0.24} /></mesh><mesh rotation={[1.1, 0.2, 0.4]}><torusGeometry args={[1.05, 0.012, 12, 80]} /><meshStandardMaterial color="#d8e7f5" metalness={0.96} roughness={0.12} transparent opacity={0.3} /></mesh></Float></group>;
+  return <group ref={group} position={[2.2, 0.9, -1.5]} scale={1.42}><Float speed={0.45} rotationIntensity={0.14} floatIntensity={0.24} floatingRange={[-0.12, 0.12]}><mesh position={[0, 0, 0.12]}><icosahedronGeometry args={[0.9, 3]} /><meshStandardMaterial color="#c7d0db" metalness={0.96} roughness={0.12} transparent opacity={0.16} depthWrite={false} /></mesh><mesh rotation={[0.45, 0.18, 0.2]}><torusGeometry args={[1.65, 0.025, 20, 96]} /><meshStandardMaterial color="#f0ece6" metalness={0.92} roughness={0.18} transparent opacity={0.14} depthWrite={false} /></mesh><mesh rotation={[1.1, 0.2, 0.4]}><torusGeometry args={[1.05, 0.012, 12, 80]} /><meshStandardMaterial color="#d8e7f5" metalness={0.96} roughness={0.12} transparent opacity={0.18} depthWrite={false} /></mesh></Float></group>;
 }
 
 export default function AmbientScene() {
