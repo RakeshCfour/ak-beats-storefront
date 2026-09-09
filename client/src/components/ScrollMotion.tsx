@@ -22,6 +22,10 @@ export default function ScrollMotion() {
       lenis.raf(time * 1000);
       current += (target - current) * 0.075;
       document.documentElement.style.setProperty("--scroll-progress", current.toFixed(4));
+      document.documentElement.style.setProperty("--scroll-shift-x", `${((current - 0.18) * 42).toFixed(2)}px`);
+      document.documentElement.style.setProperty("--scroll-shift-y", `${(current * 96).toFixed(2)}px`);
+      document.documentElement.style.setProperty("--scroll-tilt", `${((current - 0.18) * 7).toFixed(2)}deg`);
+      document.documentElement.style.setProperty("--scroll-scale", `${(1 + current * 0.045).toFixed(4)}`);
     };
 
     lenis.on("scroll", onLenisScroll);

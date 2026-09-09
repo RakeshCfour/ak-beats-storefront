@@ -35,7 +35,7 @@ function QuietForm() {
     group.current.position.y = THREE.MathUtils.damp(group.current.position.y, 0.9 + scroll.current * 0.7, 1.5, delta);
   });
 
-  return <group ref={group} position={[2.2, 0.9, -1.5]}><Float speed={0.45} rotationIntensity={0.14} floatIntensity={0.24} floatingRange={[-0.12, 0.12]}><mesh rotation={[0.45, 0.18, 0.2]}><torusGeometry args={[1.65, 0.025, 20, 96]} /><meshStandardMaterial color="#d8d3cb" metalness={0.92} roughness={0.18} transparent opacity={0.18} /></mesh></Float></group>;
+  return <group ref={group} position={[2.2, 0.9, -1.5]}><Float speed={0.45} rotationIntensity={0.14} floatIntensity={0.24} floatingRange={[-0.12, 0.12]}><mesh rotation={[0.45, 0.18, 0.2]}><torusGeometry args={[1.65, 0.025, 20, 96]} /><meshStandardMaterial color="#d8d3cb" metalness={0.92} roughness={0.18} transparent opacity={0.18} /></mesh><mesh position={[0.15, -0.1, 0.1]} rotation={[0.55, scroll.current * 1.6, 0.15]}><sphereGeometry args={[0.82, 32, 32]} /><meshStandardMaterial color="#8e9bab" metalness={0.94} roughness={0.16} transparent opacity={0.12} /></mesh><mesh rotation={[1.1, 0.2, scroll.current * 1.8]}><torusGeometry args={[1.05, 0.012, 12, 80]} /><meshStandardMaterial color="#f0ece6" metalness={0.96} roughness={0.12} transparent opacity={0.22} /></mesh></Float></group>;
 }
 
 export default function AmbientScene() {

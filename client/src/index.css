@@ -31,6 +31,11 @@
 
 :root {
   --radius: 0.45rem;
+  --scroll-progress: 0;
+  --scroll-shift-x: 0px;
+  --scroll-shift-y: 0px;
+  --scroll-tilt: 0deg;
+  --scroll-scale: 1;
   --background: #050505;
   --foreground: #f2f4f6;
   --card: #0b0d10;
@@ -129,7 +134,7 @@
 .orbit-spin { animation: spin-slow 40s linear infinite; }
 .orbit-spin-reverse { animation: spin-slow 52s linear infinite reverse; }
 
-@keyframes suspend { 0%, 100% { transform: translate3d(0, -8px, 0) rotate(-.4deg); } 50% { transform: translate3d(0, 10px, 0) rotate(.4deg); } }
+@keyframes suspend { 0%, 100% { transform: translate3d(var(--scroll-shift-x), calc(-8px + var(--scroll-shift-y)), 0) rotate(calc(-.4deg + var(--scroll-tilt))) scale(var(--scroll-scale)); } 50% { transform: translate3d(var(--scroll-shift-x), calc(10px + var(--scroll-shift-y)), 0) rotate(calc(.4deg + var(--scroll-tilt))) scale(var(--scroll-scale)); } }
 @keyframes shadow-breathe { 0%, 100% { transform: scaleX(.88); opacity: .34; } 50% { transform: scaleX(1.08); opacity: .17; } }
 .hero-stage { perspective: 1200px; }
 .suspension-wire { position: absolute; top: -2rem; left: 56%; width: 1px; height: 7.4rem; background: linear-gradient(#d8d3cb, rgba(216,211,203,.05)); opacity: .55; }
@@ -139,8 +144,8 @@
 .product-image-shell::after { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(255,255,255,.12), transparent 28%, rgba(0,0,0,.16) 85%); pointer-events: none; }
 .liquid-shadow { position: absolute; left: 8%; right: 8%; bottom: -2rem; height: 2.5rem; border-radius: 50%; background: rgba(218,210,199,.16); filter: blur(16px); animation: shadow-breathe 8s cubic-bezier(.45,.05,.55,.95) infinite; }
 .hero-object-label { position: absolute; right: -1.5rem; bottom: 8rem; width: 190px; padding-left: 1rem; border-left: 1px solid rgba(214,205,192,.55); }
-.hero-stage-note { position: absolute; left: 0; bottom: 1.5rem; font-size: .73rem; line-height: 1.45; color: #7c7973; }
-.marble-hero-accent { position: absolute; z-index: 0; top: 2rem; right: 3%; width: 34%; max-width: 205px; aspect-ratio: 3 / 4; object-fit: cover; object-position: center; opacity: .2; filter: grayscale(1) contrast(1.25) brightness(.85); mix-blend-mode: screen; transform: rotate(5deg); animation: suspend 11s cubic-bezier(.45,.05,.55,.95) infinite reverse; }
+.hero-stage-note { position: absolute; left: 0; bottom: 1.5rem; font-size: .73rem; line-height: 1.45; color: #7c7973; transform: translate3d(calc(var(--scroll-shift-x) * -.35), calc(var(--scroll-shift-y) * -.18), 0); transition: transform .12s linear; }
+.marble-hero-accent { position: absolute; z-index: 0; top: 2rem; right: 3%; width: 34%; max-width: 205px; aspect-ratio: 3 / 4; object-fit: cover; object-position: center; opacity: .2; filter: grayscale(1) contrast(1.25) brightness(.85); mix-blend-mode: screen; transform: translate3d(calc(var(--scroll-shift-x) * -.45), calc(var(--scroll-shift-y) * -.28), 0) rotate(calc(5deg - var(--scroll-tilt))); animation: suspend 11s cubic-bezier(.45,.05,.55,.95) infinite reverse; }
 .marble-micro-one, .marble-micro-two { position: absolute; z-index: 2; object-fit: cover; filter: grayscale(1) contrast(1.25) brightness(.72); mix-blend-mode: screen; pointer-events: none; animation: suspend 9s cubic-bezier(.45,.05,.55,.95) infinite; }
 .marble-micro-one { top: 11%; left: 3%; width: 76px; height: 104px; opacity: .43; transform: rotate(-9deg); }
 .marble-micro-two { right: 1%; bottom: 18%; width: 62px; height: 82px; opacity: .34; transform: rotate(8deg); animation-delay: -3s; animation-direction: reverse; }
