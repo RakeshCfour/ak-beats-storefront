@@ -42,16 +42,16 @@ function ScrollObject({ scroll, pointer, variant }: ScrollObjectProps) {
   return <group ref={group} position={config.start} scale={config.size}>
     <Float speed={0.36 + config.phase * 0.04} rotationIntensity={0.12} floatIntensity={0.2} floatingRange={[-0.16, 0.16]}>
       <mesh position={[0, 0, 0.1]}>
-        <icosahedronGeometry args={[0.82, 3]} />
-        <meshStandardMaterial color={config.color} metalness={0.98} roughness={0.1} transparent opacity={variant === "hero" ? 0.34 : 0.28} depthWrite={false} />
+        <icosahedronGeometry args={[0.82, 2]} />
+        <meshStandardMaterial color={config.color} metalness={0.98} roughness={0.1} transparent opacity={variant === "hero" ? 0.11 : 0.09} depthWrite={false} />
       </mesh>
       <mesh rotation={[0.45, 0.18, 0.2]}>
-        <torusGeometry args={[1.5, 0.026, 20, 96]} />
-        <meshStandardMaterial color={config.color} metalness={0.94} roughness={0.14} transparent opacity={variant === "hero" ? 0.35 : 0.3} depthWrite={false} />
+        <torusGeometry args={[1.5, 0.026, 12, 48]} />
+        <meshStandardMaterial color={config.color} metalness={0.94} roughness={0.14} transparent opacity={variant === "hero" ? 0.13 : 0.1} depthWrite={false} />
       </mesh>
       <mesh rotation={[1.1, 0.2, 0.4]}>
-        <torusGeometry args={[0.96, 0.014, 12, 80]} />
-        <meshStandardMaterial color="#ffffff" metalness={0.98} roughness={0.08} transparent opacity={0.38} depthWrite={false} />
+        <torusGeometry args={[0.96, 0.014, 8, 48]} />
+        <meshStandardMaterial color="#ffffff" metalness={0.98} roughness={0.08} transparent opacity={0.14} depthWrite={false} />
       </mesh>
     </Float>
   </group>;
@@ -88,5 +88,7 @@ function Scene() {
 
 export default function AmbientScene() {
   const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
-  return <div className="ambient-canvas-layer pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true"><div className="ambient-glow ambient-glow-one" /><div className="orbital-fallback"><span className="fallback-orb fallback-orb-main"><i /><b /></span><span className="fallback-orb fallback-orb-left"><i /><b /></span><span className="fallback-orb fallback-orb-right"><i /><b /></span></div>{!isTouch && <Canvas camera={{ position: [0, 0, 8], fov: 48 }} dpr={[1, 1.25]} gl={{ alpha: true, antialias: true }} frameloop="always"><ambientLight intensity={0.3} /><pointLight position={[4, 4, 6]} intensity={12} color="#f0ece6" distance={12} /><Scene /></Canvas>}</div>;
+  const cores = typeof navigator !== "undefined" ? navigator.hardwareConcurrency ?? 4 : 4;
+  const dpr: [number, number] = cores >= 8 ? [1, 1.25] : [0.7, 1];
+  return <div className="ambient-canvas-layer pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true"><div className="ambient-glow ambient-glow-one" /><div className={`orbital-fallback ${!isTouch ? "fallback-desktop-hidden" : ""}`}><span className="fallback-orb fallback-orb-main"><i /><b /></span><span className="fallback-orb fallback-orb-left"><i /><b /></span><span className="fallback-orb fallback-orb-right"><i /><b /></span></div>{!isTouch && <Canvas camera={{ position: [0, 0, 8], fov: 48 }} dpr={dpr} performance={{ min: 0.55, max: 1, debounce: 240 }} gl={{ alpha: true, antialias: cores >= 8, powerPreference: "high-performance" }} frameloop="always"><ambientLight intensity={0.24} /><pointLight position={[4, 4, 6]} intensity={9} color="#f0ece6" distance={12} /><Scene /></Canvas>}</div>;
 }

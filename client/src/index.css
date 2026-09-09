@@ -105,7 +105,8 @@
 .ambient-glow { position: absolute; border-radius: 999px; filter: blur(110px); opacity: .15; mix-blend-mode: screen; pointer-events: none; }
 .ambient-canvas-layer { z-index: 1; }
 .ambient-canvas-layer canvas { position: absolute !important; inset: 0; display: block; mix-blend-mode: screen; opacity: .9; }
-.orbital-fallback { position: absolute; inset: 0; overflow: hidden; opacity: .82; mix-blend-mode: screen; }
+.orbital-fallback { position: absolute; inset: 0; overflow: hidden; opacity: .2; mix-blend-mode: screen; }
+.fallback-desktop-hidden { display: none; }
 .fallback-orb { position: absolute; display: block; width: clamp(180px, 24vw, 420px); aspect-ratio: 1; border: 1px solid rgba(231,240,248,.34); border-radius: 50%; transform-style: preserve-3d; filter: drop-shadow(0 0 30px rgba(205,225,247,.12)); }
 .fallback-orb::before, .fallback-orb::after, .fallback-orb i, .fallback-orb b { content: ""; position: absolute; inset: 8%; border: 1px solid rgba(231,240,248,.2); border-radius: 50%; transform: rotate(38deg) rotateY(64deg); }
 .fallback-orb::after { inset: 18%; transform: rotate(-34deg) rotateX(64deg); border-color: rgba(255,255,255,.14); }
@@ -148,7 +149,7 @@
 @keyframes suspend { 0%, 100% { transform: translate3d(var(--scroll-shift-x), calc(-8px + var(--scroll-shift-y)), 0) rotate(calc(-.4deg + var(--scroll-tilt))) scale(var(--scroll-scale)); } 50% { transform: translate3d(var(--scroll-shift-x), calc(10px + var(--scroll-shift-y)), 0) rotate(calc(.4deg + var(--scroll-tilt))) scale(var(--scroll-scale)); } }
 @keyframes shadow-breathe { 0%, 100% { transform: scaleX(.88); opacity: .34; } 50% { transform: scaleX(1.08); opacity: .17; } }
 .hero-stage { perspective: 1200px; }
-.hero-orbit-field { position: absolute; inset: -12% -18% -12% -12%; z-index: 1; pointer-events: none; opacity: .9; mix-blend-mode: screen; }
+.hero-orbit-field { position: absolute; inset: -12% -18% -12% -12%; z-index: 1; pointer-events: none; opacity: .2; mix-blend-mode: screen; }
 .hero-orbit { position: absolute; display: block; width: clamp(210px, 34vw, 520px); aspect-ratio: 1; border: 1px solid rgba(232,241,249,.48); border-radius: 50%; filter: drop-shadow(0 0 38px rgba(204,225,246,.18)); transform-style: preserve-3d; }
 .hero-orbit::before, .hero-orbit::after, .hero-orbit i, .hero-orbit b { content: ""; position: absolute; inset: 7%; border: 1px solid rgba(230,241,250,.28); border-radius: 50%; transform: rotate(40deg) rotateY(66deg); }
 .hero-orbit::after { inset: 16%; border-color: rgba(255,255,255,.23); transform: rotate(-38deg) rotateX(68deg); }
