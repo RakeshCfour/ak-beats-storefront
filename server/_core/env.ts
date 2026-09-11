@@ -12,4 +12,13 @@ export const ENV = {
   razorpayKeyId: process.env.RAZORPAY_KEY_ID ?? "",
   razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET ?? "",
   razorpayWebhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET ?? "",
+  emailApiKey: process.env.EMAIL_API_KEY ?? "",
+  emailFrom: process.env.EMAIL_FROM ?? "AK VOID <orders@your-domain.com>",
+  orderNotificationEmail: process.env.ORDER_NOTIFICATION_EMAIL ?? "akbeats.21@gmail.com",
+  whatsappAccessToken: process.env.WHATSAPP_ACCESS_TOKEN ?? "",
+  whatsappPhoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID ?? "",
+  whatsappApiVersion: process.env.WHATSAPP_API_VERSION ?? "v20.0",
+  whatsappTemplateName: process.env.WHATSAPP_TEMPLATE_NAME ?? "order_notification",
+  whatsappTemplateLanguage: process.env.WHATSAPP_TEMPLATE_LANGUAGE ?? "en_US",
+  orderNotificationWhatsappTo: process.env.ORDER_NOTIFICATION_WHATSAPP_TO ?? "918099996966",
 };

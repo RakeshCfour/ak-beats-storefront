@@ -54,6 +54,7 @@ export type Product = {
   description: string;
   descriptionHtml: string;
   productType: string | null;
+  gender?: "men" | "women" | "unisex";
   vendor: string | null;
   tags: string[];
   images: Image[];

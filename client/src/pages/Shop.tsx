@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import ProductCard from "@/components/ProductCard";
 
-const categories = ["All pieces", "Tees", "Hoodies", "Accessories"];
+const categories = ["All pieces", "Men's", "Women's", "Tees", "Hoodies", "Accessories"];
 
 export default function Shop() {
   const [location, setLocation] = useLocation();
@@ -20,7 +20,7 @@ export default function Shop() {
       const searchable = `${product.title} ${product.description} ${product.productType ?? ""} ${product.tags.join(" ")}`.toLowerCase();
       const category = `${product.title} ${product.productType ?? ""} ${product.tags.join(" ")}`.toLowerCase();
       const matchesSearch = !query || searchable.includes(query);
-      const matchesCategory = activeCategory === "All pieces" || category.includes(activeCategory.toLowerCase().replace(/s$/, ""));
+      const matchesCategory = activeCategory === "All pieces" || (activeCategory === "Men's" ? product.gender === "men" || product.gender === "unisex" : activeCategory === "Women's" ? product.gender === "women" || product.gender === "unisex" : category.includes(activeCategory.toLowerCase().replace(/s$/, "")));
       return matchesSearch && matchesCategory;
     });
     return [...result].sort((a, b) => sort === "price-low" ? Number(a.priceRange.min.amount) - Number(b.priceRange.min.amount) : sort === "price-high" ? Number(b.priceRange.min.amount) - Number(a.priceRange.min.amount) : a.title.localeCompare(b.title));

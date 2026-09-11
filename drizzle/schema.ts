@@ -18,6 +18,7 @@ export const products = mysqlTable("products", {
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description").notNull(),
   category: varchar("category", { length: 80 }).notNull(),
+  gender: mysqlEnum("gender", ["men", "women", "unisex"]).default("unisex").notNull(),
   imageUrl: text("imageUrl"),
   imageAlt: varchar("imageAlt", { length: 255 }),
   visible: boolean("visible").default(true).notNull(),
