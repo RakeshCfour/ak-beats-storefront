@@ -35,7 +35,7 @@ function normalizeProduct(row: Awaited<ReturnType<typeof productRows>>[number]):
 }
 
 export async function listDbProducts(includeHidden = false) { return (await productRows(includeHidden)).map(normalizeProduct); }
-export async function getDbProductByHandle(handle: string) { const product = (await productRows(true)).find(row => row.product.slug === handle); return product ? normalizeProduct(product) : null; }
+export async function getDbProductByHandle(handle: string, includeHidden = false) { const product = (await productRows(includeHidden)).find(row => row.product.slug === handle); return product ? normalizeProduct(product) : null; }
 
 async function getCartRows(cartId: string) {
   const db = await getDb();
