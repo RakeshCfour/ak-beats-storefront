@@ -30,7 +30,7 @@ function normalizeProduct(row: Awaited<ReturnType<typeof productRows>>[number]):
     productType: row.product.category, gender: row.product.gender, vendor: "AK VOID", tags: [row.product.category, row.product.gender],
     images: row.images.length ? row.images.map(i => ({ url: i.url, altText: i.altText })) : (primaryImage ? [{ url: primaryImage, altText: row.product.imageAlt }] : []),
     priceRange: { min: money(min.toFixed(2)), max: money(max.toFixed(2)) }, options,
-    variants: variants.map(v => ({ id: String(v.id), title: v.name, price: money(activePrice(v)), compareAtPrice: v.discountEnabled && v.salePrice && Number(v.salePrice) < Number(v.price) ? money(v.price) : null, availableForSale: v.stock > 0, selectedOptions: [{ name: "Size", value: v.name }] })),
+    variants: variants.map(v => ({ id: String(v.id), title: v.name, price: money(activePrice(v)), compareAtPrice: v.discountEnabled && v.salePrice && Number(v.salePrice) < Number(v.price) ? money(v.price) : null, availableForSale: v.stock > 0, inventoryQuantity: v.stock, selectedOptions: [{ name: "Size", value: v.name }] })),
   };
 }
 

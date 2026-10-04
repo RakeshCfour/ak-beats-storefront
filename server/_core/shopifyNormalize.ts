@@ -114,6 +114,7 @@ function normalizeVariant(v: RawVariant): ProductVariant {
     price: normalizeMoney(v.price),
     compareAtPrice: v.compareAtPrice ? normalizeMoney(v.compareAtPrice) : null,
     availableForSale: v.availableForSale,
+    inventoryQuantity: null,
     selectedOptions: (v.selectedOptions ?? []).map(normalizeSelectedOption),
   };
 }

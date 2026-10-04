@@ -42,6 +42,8 @@ export type ProductVariant = {
   price: Money;
   compareAtPrice: Money | null;
   availableForSale: boolean;
+  /** Remaining stock when the backend exposes it; null when unavailable. */
+  inventoryQuantity: number | null;
   /** Flat list of selected options — sized for variant pickers. */
   selectedOptions: SelectedOption[];
 };
