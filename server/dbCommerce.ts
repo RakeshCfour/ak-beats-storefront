@@ -30,7 +30,7 @@ function normalizeProduct(row: Awaited<ReturnType<typeof productRows>>[number]):
     productType: row.product.category, gender: row.product.gender, vendor: "AK VOID", tags: [row.product.category, row.product.gender],
     images: row.images.length ? row.images.map(i => ({ url: i.url, altText: i.altText })) : (primaryImage ? [{ url: primaryImage, altText: row.product.imageAlt }] : []),
     priceRange: { min: money(min.toFixed(2)), max: money(max.toFixed(2)) }, options,
-    variants: variants.map(v => ({ id: String(v.id), title: v.name, price: money(activePrice(v)), compareAtPrice: v.discountEnabled && v.salePrice ? money(v.price) : null, availableForSale: v.stock > 0, selectedOptions: [{ name: "Size", value: v.name }] })),
+    variants: variants.map(v => ({ id: String(v.id), title: v.name, price: money(activePrice(v)), compareAtPrice: v.discountEnabled && v.salePrice && Number(v.salePrice) < Number(v.price) ? money(v.price) : null, availableForSale: v.stock > 0, selectedOptions: [{ name: "Size", value: v.name }] })),
   };
 }
 
@@ -51,7 +51,7 @@ async function getCartRows(cartId: string) {
 
 export async function getDbCart(cartId: string): Promise<Cart | null> {
   const data = await getCartRows(cartId); if (!data) return null;
-  const items = data.lines.flatMap(line => { const variant = data.variants.find(v => v.id === line.variantId); const product = variant && data.productRows.find(p => p.id === variant.productId); if (!variant || !product) return []; const price = activePrice(variant); const itemImage = data.imgs.find(i => i.productId === product.id); return [{ lineId: String(line.id), variantId: String(variant.id), productHandle: product.slug, productTitle: product.title, variantTitle: variant.name, image: image(itemImage?.url ?? product.imageUrl, itemImage?.altText ?? product.imageAlt), unitPrice: money(price), quantity: line.quantity, lineTotal: money((Number(price) * line.quantity).toFixed(2)) }]; });
+  const items = data.lines.flatMap(line => { const variant = data.variants.find(v => v.id === line.variantId); const product = variant && data.productRows.find(p => p.id === variant.productId); if (!variant || !product) return []; const price = activePrice(variant); const originalUnitPrice = variant.discountEnabled && variant.salePrice && Number(variant.salePrice) < Number(variant.price) ? money(variant.price) : null; const itemImage = data.imgs.find(i => i.productId === product.id); return [{ lineId: String(line.id), variantId: String(variant.id), productHandle: product.slug, productTitle: product.title, variantTitle: variant.name, image: image(itemImage?.url ?? product.imageUrl, itemImage?.altText ?? product.imageAlt), unitPrice: money(price), originalUnitPrice, quantity: line.quantity, lineTotal: money((Number(price) * line.quantity).toFixed(2)) }]; });
   const subtotal = items.reduce((sum, item) => sum + Number(item.lineTotal.amount), 0);
   return { id: cartId, checkoutUrl: "", items, itemCount: items.reduce((sum, item) => sum + item.quantity, 0), subtotal: money(subtotal.toFixed(2)), total: money(subtotal.toFixed(2)) };
 }

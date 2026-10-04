@@ -158,6 +158,7 @@ function normalizeCartItem(line: RawCartLine): CartItem {
     variantTitle: line.merchandise.title,
     image: img ? normalizeImage(img) : null,
     unitPrice: normalizeMoney(line.merchandise.price),
+    originalUnitPrice: null,
     quantity: line.quantity,
     lineTotal: normalizeMoney(line.cost.totalAmount),
   };

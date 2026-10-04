@@ -82,6 +82,8 @@ export type CartItem = {
   variantTitle: string;
   image: Image | null;
   unitPrice: Money;
+  /** Original unit price when the item is discounted; null for regular-price items. */
+  originalUnitPrice: Money | null;
   quantity: number;
   lineTotal: Money;
 };
