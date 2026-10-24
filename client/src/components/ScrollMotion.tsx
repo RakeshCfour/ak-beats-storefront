@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function ScrollMotion() {
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(pointer: coarse)").matches) {
       const onScroll = () => {
         const progress = window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
@@ -19,7 +20,7 @@ export default function ScrollMotion() {
       onScroll();
       return () => window.removeEventListener("scroll", onScroll);
     }
-    const lenis = new Lenis({ autoRaf: false, lerp: 0.085, smoothWheel: true, syncTouch: false });
+    const lenis = new Lenis({ autoRaf: false, lerp: 0.11, smoothWheel: true, syncTouch: false });
     let current = 0;
     let target = 0;
 

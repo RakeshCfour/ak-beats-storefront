@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
@@ -42,15 +42,15 @@ function ScrollObject({ scroll, pointer, variant }: ScrollObjectProps) {
   return <group ref={group} position={config.start} scale={config.size}>
     <Float speed={0.36 + config.phase * 0.04} rotationIntensity={0.12} floatIntensity={0.2} floatingRange={[-0.16, 0.16]}>
       <mesh position={[0, 0, 0.1]}>
-        <icosahedronGeometry args={[0.82, 2]} />
+        <icosahedronGeometry args={[0.82, 1]} />
         <meshStandardMaterial color={config.color} metalness={0.98} roughness={0.1} transparent opacity={variant === "hero" ? 0.11 : 0.09} depthWrite={false} />
       </mesh>
       <mesh rotation={[0.45, 0.18, 0.2]}>
-        <torusGeometry args={[1.5, 0.026, 12, 48]} />
+        <torusGeometry args={[1.5, 0.026, 8, 28]} />
         <meshStandardMaterial color={config.color} metalness={0.94} roughness={0.14} transparent opacity={variant === "hero" ? 0.13 : 0.1} depthWrite={false} />
       </mesh>
       <mesh rotation={[1.1, 0.2, 0.4]}>
-        <torusGeometry args={[0.96, 0.014, 8, 48]} />
+        <torusGeometry args={[0.96, 0.014, 6, 24]} />
         <meshStandardMaterial color="#ffffff" metalness={0.98} roughness={0.08} transparent opacity={0.14} depthWrite={false} />
       </mesh>
     </Float>
@@ -60,15 +60,18 @@ function ScrollObject({ scroll, pointer, variant }: ScrollObjectProps) {
 function Scene() {
   const pointer = useRef<PointerState>({ x: 0, y: 0 });
   const scroll = useRef(0);
+  const invalidate = useThree(state => state.invalidate);
 
   useEffect(() => {
     const onPointer = (event: PointerEvent) => {
       pointer.current.x = (event.clientX / window.innerWidth - 0.5) * 2;
       pointer.current.y = (event.clientY / window.innerHeight - 0.5) * 2;
+      invalidate();
     };
     const onScroll = () => {
       const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       scroll.current = window.scrollY / max;
+      invalidate();
     };
     window.addEventListener("pointermove", onPointer, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -77,7 +80,12 @@ function Scene() {
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [invalidate]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => invalidate(), 1000 / 30);
+    return () => window.clearInterval(timer);
+  }, [invalidate]);
 
   return <>
     <ScrollObject scroll={scroll} pointer={pointer} variant="hero" />
@@ -88,7 +96,8 @@ function Scene() {
 
 export default function AmbientScene() {
   const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+  const reducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const cores = typeof navigator !== "undefined" ? navigator.hardwareConcurrency ?? 4 : 4;
-  const dpr: [number, number] = cores >= 8 ? [1, 1.25] : [0.7, 1];
-  return <div className="ambient-canvas-layer pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true"><div className="ambient-glow ambient-glow-one" /><div className={`orbital-fallback ${!isTouch ? "fallback-desktop-hidden" : ""}`}><span className="fallback-orb fallback-orb-main"><i /><b /></span><span className="fallback-orb fallback-orb-left"><i /><b /></span><span className="fallback-orb fallback-orb-right"><i /><b /></span></div>{!isTouch && <Canvas camera={{ position: [0, 0, 8], fov: 48 }} dpr={dpr} performance={{ min: 0.55, max: 1, debounce: 240 }} gl={{ alpha: true, antialias: cores >= 8, powerPreference: "high-performance" }} frameloop="always"><ambientLight intensity={0.24} /><pointLight position={[4, 4, 6]} intensity={9} color="#f0ece6" distance={12} /><Scene /></Canvas>}</div>;
+  const dpr: [number, number] = cores >= 8 ? [0.8, 1] : [0.65, 0.85];
+  return <div className="ambient-canvas-layer pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true"><div className="ambient-glow ambient-glow-one" /><div className={`orbital-fallback ${!isTouch ? "fallback-desktop-hidden" : ""} ${reducedMotion ? "motion-reduced" : ""}`}><span className="fallback-orb fallback-orb-main"><i /><b /></span><span className="fallback-orb fallback-orb-left"><i /><b /></span><span className="fallback-orb fallback-orb-right"><i /><b /></span></div>{!isTouch && !reducedMotion && <Canvas camera={{ position: [0, 0, 8], fov: 48 }} dpr={dpr} performance={{ min: 0.5, max: 1, debounce: 240 }} gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }} frameloop="demand"><ambientLight intensity={0.24} /><pointLight position={[4, 4, 6]} intensity={7} color="#f0ece6" distance={12} /><Scene /></Canvas>}</div>;
 }
