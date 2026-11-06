@@ -2,14 +2,18 @@ import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { defineConfig, type Plugin, type ViteDevServer } from "vite";
 
-// vite-plugin-manus-runtime is only available in Manus AI environment
+// vite-plugin-manus-runtime is only available in Manus AI environment – load it
+// synchronously so vite.config.ts stays a plain (non-async) ES module.
+const _require = createRequire(import.meta.url);
 let vitePluginManusRuntime: (() => Plugin) | null = null;
 try {
-  const manusModule = await import("vite-plugin-manus-runtime");
-  vitePluginManusRuntime = manusModule.vitePluginManusRuntime;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const manusModule = _require("vite-plugin-manus-runtime");
+  vitePluginManusRuntime = manusModule.vitePluginManusRuntime ?? null;
 } catch {
   // Not in Manus environment – skip the plugin
 }
